@@ -10,9 +10,9 @@ const getById = async (id) => {
 
 }
 
-const insert = async (userId, userNm, password, role) => {
+const insert = async (userId, userNm, email, password, roleId) => {
     try {
-        let data = await db.one('INSERT INTO auth.users(user_id,user_nm,password,role) VALUES($1, $2, $3, $4) RETURNING user_id', [userId, userNm, password, role])
+        let data = await db.one('INSERT INTO auth.users(user_id,user_nm,email,password,role_id) VALUES($1, $2, $3, $4, $5) RETURNING user_id', [userId, userNm, email, password, roleId])
         return `${data.user_id} has been inserted`
     } catch (err) {
         throw(err)

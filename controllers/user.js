@@ -6,16 +6,18 @@ const register = async  (req, res) => {
     try {
         const userId = req.body.user_id
         const userNm = req.body.user_nm
+        const email  = req.body.email
         const password = req.body.password
-        const role = req.body.role
+        const roleId = req.body.role_id
         //Hash Password
         const encryptedPassword = await bcrypt.hash(password, 10)
-        let result = await userService.insert(userId, userNm, encryptedPassword, role)
+        let result = await userService.insert(userId, userNm, email, encryptedPassword, roleId)
         
         const token = jwt.sign({
             user_id : userId,
             user_nm : userNm,
-            role    : role
+            email   : email,
+            role_id : roleId
         }, process.env.JWT_SECRET,{
             expiresIn :"1h"
         })
@@ -23,7 +25,8 @@ const register = async  (req, res) => {
         result = {
             user_id : userId,
             user_nm : userNm,
-            role    : role,
+            email   : email,
+            role_id : roleId,
             token   : token
         }
 
@@ -47,7 +50,8 @@ const login = async (req, res) => {
             const token = jwt.sign({
                 user_id : user[0].user_id,
                 user_nm : user[0].user_nm,
-                role    : user[0].role
+                email   : user[0].email,
+                role_id : user[0].role_id
             }, process.env.JWT_SECRET,{
                 expiresIn :"1h"
             })
@@ -55,7 +59,8 @@ const login = async (req, res) => {
             result = {
                 user_id : user[0].user_id,
                 user_nm : user[0].user_nm,
-                role    : user[0].role,
+                email   : user[0].email,
+                role_id : user[0].role_id,
                 token   : token
             }
     

@@ -2,6 +2,7 @@
 exports.up = async function(knex) {
     await knex.raw(`CREATE TABLE fpl.matches (
         match_id bigserial NOT NULL,
+        season varchar(20) NOT NULL,
         gameweek int4 NOT NULL,
         home_team varchar(50) NOT NULL,
         away_team varchar(50) NOT NULL,
