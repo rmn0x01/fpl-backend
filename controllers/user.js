@@ -2,6 +2,37 @@ const userService = require('../services/user')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const getAll = async (req, res) => {
+    try{
+        let result = await userService.getAll()
+        res.status(200).json({
+            data: result
+        })
+    } catch(err){
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
+const getById = async (req, res) => {
+    try{
+        let result = await userService.getById(req.params.id)
+        if(result.length === 0){
+            throw 'Invalid ID'
+        }
+        res.status(200).json({
+            data: result
+        })
+    } catch(err){
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
 const register = async  (req, res) => {
     try {
         const userId = req.body.user_id
@@ -78,7 +109,80 @@ const login = async (req, res) => {
     }
 }
 
+const insert = async (req, res) => {
+    try {
+        const userId = req.body.user_id
+        const userNm = req.body.user_nm
+        const email  = req.body.email
+        const password = req.body.password
+        const roleId = req.body.role_id
+
+        //Hash Password
+        const encryptedPassword = await bcrypt.hash(password, 10)
+        let result = await userService.insert(userId, userNm, email, encryptedPassword, roleId)
+
+        res.status(200).json({
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
+const update = async (req, res) => {
+    try{
+        const userId = req.params.id
+        const userNm = req.body.user_nm
+        const email  = req.body.email
+        const password = req.body.password
+        const roleId = req.body.role_id
+        //validate
+        let validate = await userService.getById(userId)
+        if(validate.length === 0){
+            throw 'Invalid ID'
+        }
+        //Hash Password
+        const encryptedPassword = await bcrypt.hash(password, 10)
+        let result = await userService.update(userId, userNm, email, encryptedPassword, roleId)
+        res.status(200).json({
+            data: result
+        })
+    } catch (err){
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
+const remove = async (req, res) => {
+    try{
+        //validate
+        let validate = await userService.getById(req.params.id)
+        if(validate.length === 0){
+            throw 'Invalid ID'
+        }
+        let result = await userService.remove(req.params.id)
+        res.status(200).json({
+            data: result
+        })
+    } catch(err){
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
 module.exports = {
+    getAll,
+    getById,
     register,
-    login
+    login,
+    insert,
+    update,
+    remove,
 }
