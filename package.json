@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "db-migrate" : "knex migrate:latest",
+    "db-seed" : "knex seed:run"
   },
   "author": "rmn0x01",
   "license": "ISC",
