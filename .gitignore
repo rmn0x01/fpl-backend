@@ -130,3 +130,7 @@ dist
 
 # Knexfile settings
 knexfile.js
+
+# Public files
+public/data/teams/
+public/data/uploads/
