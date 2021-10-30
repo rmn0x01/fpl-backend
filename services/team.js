@@ -42,6 +42,24 @@ const update = async (teamId, teamNm, teamImg, isOnPl) => {
     }
 }
 
+const updatePhoto = async (teamId, teamNm, teamImg, isOnPl) => {
+    try {
+        //remove file
+        const data = await getById(teamId)
+        const photoPath = path.join(__dirname, '../' + teamPhotosDirectory + '/' + data[0].team_img)
+        await fs.unlink(photoPath, (err) => {
+            if(err && err.code == 'ENOENT'){ //continue if file doesnt exist
+            } else if (err){
+                throw(err) //throw error on any error but file doesnt exist
+            }
+        })
+        await db.any(`UPDATE ${table} SET team_nm = $2, team_img = $3, is_on_pl = $4 WHERE ${primaryKey} = $1`, [teamId, teamNm, teamImg, isOnPl])
+        return `${teamId} has been updated`
+    } catch (err) {
+        throw(err)
+    }
+}
+
 const remove = async (teamId) => {
     try {
         //remove file
@@ -66,5 +84,6 @@ module.exports = {
     getById,
     insert,
     update,
+    updatePhoto,
     remove
 }

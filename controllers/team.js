@@ -84,7 +84,7 @@ const updatePhoto = async (req, res) => {
         }
         const teamNm = validate[0].team_nm
         const isOnPl = validate[0].is_on_pl
-        let result = await teamService.update(teamId, teamNm, teamImg, isOnPl)
+        let result = await teamService.updatePhoto(teamId, teamNm, teamImg, isOnPl)
         res.status(200).json({
             data: result
         })

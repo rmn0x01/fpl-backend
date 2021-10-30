@@ -20,7 +20,7 @@ const diskStorage = multer.diskStorage({
       );
     },
   });
-const upload = multer({ storage: diskStorage, fileFilter: helpers.imageFilter }).single("team_img")
+const upload = multer({ storage: diskStorage, fileFilter: helpers.imageFilter,limits: { fileSize: 5*1024*1024 } }).single("team_img")
 
 const updateDiskStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -33,7 +33,7 @@ const updateDiskStorage = multer.diskStorage({
     );
   },
 });
-const updateUpload = multer({ storage: updateDiskStorage, fileFilter: helpers.imageFilter }).single("team_img")
+const updateUpload = multer({ storage: updateDiskStorage, fileFilter: helpers.imageFilter,limits: { fileSize: 5*1024*1024 } }).single("team_img")
 
 router.get('/', authMiddleware.verifyToken, roleMiddleware.isAdminOrSuper, teamController.getAll)
 router.get('/:id', authMiddleware.verifyToken, roleMiddleware.isAdminOrSuper, teamController.getById)
@@ -42,6 +42,11 @@ router.post('/', authMiddleware.verifyToken, roleMiddleware.isAdminOrSuper, (req
         if(req.fileValidationError){
             return res.status(400).json({
                 message: req.fileValidationError
+            })
+        }
+        if(err){
+            return res.status(400).json({
+                message: err.message || err
             })
         }
         return next()
@@ -54,6 +59,11 @@ router.put('/photo/:id', authMiddleware.verifyToken, roleMiddleware.isAdminOrSup
                 message: req.fileValidationError
             })
         }
+        if(err){
+          return res.status(400).json({
+              message: err.message || err
+          })
+      }
         return next()
     }
     )},teamController.updatePhoto)
