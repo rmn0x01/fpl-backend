@@ -134,3 +134,4 @@ knexfile.js
 # Public files
 public/data/teams/
 public/data/uploads/
+public/data/players/
