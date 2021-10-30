@@ -1,4 +1,7 @@
 const db    = require('../libraries/db')
+const fs    = require('fs')
+const path  = require('path')
+const teamPhotosDirectory = process.env.TEAM_PHOTOS_DIRECTORY || 'public/data/teams'
 const table = 'fpl.teams'
 const primaryKey = 'team_id'
 
@@ -30,19 +33,29 @@ const insert = async (teamId, teamNm, teamImg, isOnPl) => {
     }
 }
 
-const update = async (roleId, roleNm) => {
+const update = async (teamId, teamNm, teamImg, isOnPl) => {
     try {
-        await db.any(`UPDATE ${table} SET role_nm = $1 WHERE ${primaryKey} = $2`, [roleNm, roleId])
-        return `${roleId} has been updated`
+        await db.any(`UPDATE ${table} SET team_nm = $2, team_img = $3, is_on_pl = $4 WHERE ${primaryKey} = $1`, [teamId, teamNm, teamImg, isOnPl])
+        return `${teamId} has been updated`
     } catch (err) {
         throw(err)
     }
 }
 
-const remove = async (roleId) => {
+const remove = async (teamId) => {
     try {
-        await db.any(`DELETE FROM ${table} WHERE ${primaryKey} = $1`, [roleId])
-        return `${roleId} has been removed`
+        //remove file
+        const data = await getById(teamId)
+        const photoPath = path.join(__dirname, '../' + teamPhotosDirectory + '/' + data[0].team_img)
+        await fs.unlink(photoPath, (err) => {
+            if(err && err.code == 'ENOENT'){ //continue if file doesnt exist
+            } else if (err){
+                throw(err) //throw error on any error but file doesnt exist
+            }
+        })
+
+        await db.any(`DELETE FROM ${table} WHERE ${primaryKey} = $1`, [teamId])
+        return `${teamId} has been removed`
     } catch (err) {
         throw(err)
     }
