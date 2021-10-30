@@ -11,6 +11,7 @@ const userRouter = require('./routes/user')
 const roleRouter = require('./routes/role')
 //fpl
 const teamRouter = require('./routes/team')
+const playerRouter = require('./routes/player')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -18,6 +19,7 @@ app.use('/', indexRouter)
 app.use('/user', userRouter)
 app.use('/role', roleRouter)
 app.use('/team', teamRouter)
+app.use('/player', playerRouter)
 
 app.listen(port, () => {
     console.log(`Listening at ${port}`)
