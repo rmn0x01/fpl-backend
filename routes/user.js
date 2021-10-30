@@ -7,7 +7,7 @@ const roleMiddleware = require('../middleware/role')
 
 router.post('/register', userMiddleware.duplicateCheck, userController.register)
 router.post('/login',userController.login)
-router.get('/all', authMiddleware.verifyToken, roleMiddleware.isSuper, userController.getAll)
+router.get('/', authMiddleware.verifyToken, roleMiddleware.isSuper, userController.getAll)
 router.get('/:id', authMiddleware.verifyToken, roleMiddleware.isSuper, userController.getById)
 router.post('/', authMiddleware.verifyToken, roleMiddleware.isSuper, userController.insert)
 router.put('/:id', authMiddleware.verifyToken, roleMiddleware.isSuper, userController.update)
