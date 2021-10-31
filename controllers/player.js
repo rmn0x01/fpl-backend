@@ -36,8 +36,9 @@ const insert = async (req, res) => {
     try {
         const playerId = req.body.player_id
         const playerNm = req.body.player_nm
+        const playerPos = req.body.player_pos
         const playerImg = req.body.player_id + path.extname(req.file.originalname)
-        let result = await playerService.insert(playerId, playerNm, playerImg)
+        let result = await playerService.insert(playerId, playerNm, playerPos, playerImg)
         res.status(200).json({
             data: result
         })
@@ -59,7 +60,8 @@ const update = async (req, res) => {
         }
         const playerImg = validate[0].player_img
         const playerNm  = req.body.player_nm || validate[0].player_nm
-        let result = await playerService.update(playerId, playerNm, playerImg)
+        const playerPos = req.body.player_pos || validate[0].player_pos
+        let result = await playerService.update(playerId, playerNm, playerPos, playerImg)
         res.status(200).json({
             data: result
         })
@@ -81,7 +83,8 @@ const updatePhoto = async (req, res) => {
             throw 'Invalid ID'
         }
         const playerNm = validate[0].player_nm
-        let result = await playerService.updatePhoto(playerId, playerNm, playerImg)
+        const playerPos = validate[0].player_pos
+        let result = await playerService.updatePhoto(playerId, playerNm, playerPos, playerImg)
         res.status(200).json({
             data: result
         })
