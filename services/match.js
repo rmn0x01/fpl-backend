@@ -93,6 +93,7 @@ const sync = async () => {
                                 for(let k = 0; k<homeTeamDetails.length; k++){
                                     assists[homeTeamDetails[k].element] = homeTeamDetails[k].value
                                 }
+                                break;
                             case 'own_goals':
                                 for(let k = 0; k<awayTeamDetails.length; k++){
                                     ownGoals[awayTeamDetails[k].element] = awayTeamDetails[k].value
@@ -100,6 +101,7 @@ const sync = async () => {
                                 for(let k = 0; k<homeTeamDetails.length; k++){
                                     ownGoals[homeTeamDetails[k].element] = homeTeamDetails[k].value
                                 }
+                                break;
                             case 'yellow_cards':
                                 for(let k = 0; k<awayTeamDetails.length; k++){
                                     yellowCards[awayTeamDetails[k].element] = awayTeamDetails[k].value
@@ -107,6 +109,7 @@ const sync = async () => {
                                 for(let k = 0; k<homeTeamDetails.length; k++){
                                     yellowCards[homeTeamDetails[k].element] = homeTeamDetails[k].value
                                 }
+                                break;
                             case 'red_cards':
                                 for(let k = 0; k<awayTeamDetails.length; k++){
                                     redCards[awayTeamDetails[k].element] = awayTeamDetails[k].value
@@ -114,6 +117,7 @@ const sync = async () => {
                                 for(let k = 0; k<homeTeamDetails.length; k++){
                                     redCards[homeTeamDetails[k].element] = homeTeamDetails[k].value
                                 }
+                                break;
                             case 'bps':
                                 for(let k = 0; k<awayTeamDetails.length; k++){
                                     playing.push(awayTeamDetails[k].element)
@@ -121,6 +125,7 @@ const sync = async () => {
                                 for(let k = 0; k<homeTeamDetails.length; k++){
                                     playing.push(homeTeamDetails[k].element)
                                 }
+                                break;
                             default:
                                 break;
                         }
