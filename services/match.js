@@ -3,13 +3,48 @@ const table = 'fpl.matches'
 const primaryKey = 'match_id'
 
 const https = require('https')
-const { json } = require('body-parser')
 
 const getAll = async () => {
     try{
         let data = await db.any(`SELECT * FROM ${table}`, [true])
         return data
     } catch (err){
+        throw(err)
+    }
+}
+/**
+ * Get Match by Season and Gameweek
+ * 
+ * @param {string} season 
+ * @param {integer} gameweek 
+ * @returns {object} data
+ */
+const getBySeasonAndGameweek = async (season,gameweek) => {
+    try{
+        let data = await db.any(`
+            SELECT m.*, t.team_nm AS home_team_name, t2.team_nm AS away_team_nm
+            FROM fpl.matches m
+            JOIN fpl.teams t ON m.home_team = t.team_id
+            JOIN fpl.teams t2 ON m.away_team = t2.team_id
+            WHERE m.season = $1::varchar AND m.gameweek = $2::integer
+        `,[season, gameweek])
+        return data
+    } catch (err){
+        throw(err)
+    }
+}
+const getById = async (id) => {
+    try {
+        let data = await db.any(`
+            SELECT md.match_detail_id, md.squad_id, t.team_id, t.team_nm, p.player_id, p.player_nm, md.is_starting, md.goal, md.assist, md.yellow_card, md.red_card, md.own_goal
+            FROM fpl.match_details md
+            JOIN fpl.squads s ON md.squad_id = s.squad_id
+            JOIN fpl.teams t ON t.team_id = s.team_id
+            JOIN fpl.players p ON p.player_id = s.player_id
+            WHERE md.match_id = $1::integer ORDER BY t.team_id
+        `, [id])
+        return data
+    } catch (err) {
         throw(err)
     }
 }
@@ -166,6 +201,8 @@ const sync = async () => {
 
 module.exports = {
     getAll,
+    getBySeasonAndGameweek,
+    getById,
     getLatestGameweek,
     sync
 }

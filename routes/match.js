@@ -6,5 +6,7 @@ const roleMiddleware = require('../middleware/role')
 
 router.get('/', authMiddleware.verifyToken, matchController.getAll)
 router.get('/sync', authMiddleware.verifyToken, matchController.sync)
+router.get('/:id', authMiddleware.verifyToken, matchController.getById)
+router.get('/gameweek/:season/:gameweek', authMiddleware.verifyToken, matchController.getBySeasonAndGameweek)
 
 module.exports = router
