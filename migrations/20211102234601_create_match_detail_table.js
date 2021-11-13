@@ -12,6 +12,7 @@ exports.up = async function(knex){
         yellow_card int2 NULL,
         red_card int2 NULL,
         own_goal int4 NULL,
+        total_score int4 NULL,
         CONSTRAINT match_details_pkey PRIMARY KEY (match_detail_id)
     )`)
     await knex.raw(`ALTER TABLE fpl.match_details ADD CONSTRAINT match_details_match_id_foreign FOREIGN KEY (match_id) REFERENCES fpl.matches(match_id) ON DELETE CASCADE ON UPDATE CASCADE`)

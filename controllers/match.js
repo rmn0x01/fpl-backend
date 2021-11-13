@@ -65,9 +65,25 @@ const sync = async (req, res) => {
     }
 }
 
+const calculate = async (req, res) => {
+    try {
+        let result = await matchService.calculate(req.params.gameweek)
+        res.status(200).json({
+            gameweek: req.params.gameweek,
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
 module.exports = {
     getAll,
     getBySeasonAndGameweek,
     getById,
-    sync
+    sync,
+    calculate
 }

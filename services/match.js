@@ -199,10 +199,40 @@ const sync = async () => {
     }
 }
 
+const calculate = async (gameweek) => {
+    try {
+        var data = await db.any(`
+            SELECT md.match_detail_id, md.is_starting, md.goal, md.assist, md.yellow_card, md.red_card, md.own_goal 
+            FROM ${table} m 
+            JOIN fpl.match_details md ON md.match_id = m.match_id 
+            WHERE m.gameweek = $1
+        `,[gameweek])
+        if(data.length == 0){
+            throw 'Invalid Gameweek'
+        }
+        for(let i=0; i<data.length; i++){
+            var matchDetailId   = data[i].match_detail_id
+            var playerTotalPoints = 0
+            playerTotalPoints += data[i].is_starting * (process.env.PLAYER_IS_STARTING_POINT || 1)
+            playerTotalPoints += data[i].goal * (process.env.PLAYER_GOAL_POINT || 1)
+            playerTotalPoints += data[i].assist * (process.env.PLAYER_ASSIST_POINT || 1)
+            playerTotalPoints += data[i].yellow_card * (process.env.PLAYER_YELLOW_CARD_POINT || 1)
+            playerTotalPoints += data[i].red_card * (process.env.PLAYER_RED_CARD_POINT || 1)
+            playerTotalPoints += data[i].own_goal * (process.env.PLAYER_OWN_GOAL_POINT || 1)
+
+            db.any(`UPDATE fpl.match_details SET total_score = $1 WHERE match_detail_id = $2`, [playerTotalPoints, matchDetailId])
+        }
+        return `Gameweek ${gameweek} points is being updated, changes will be applied in the next several seconds`
+    } catch (err) {
+        throw(err)
+    }
+}
+
 module.exports = {
     getAll,
     getBySeasonAndGameweek,
     getById,
     getLatestGameweek,
-    sync
+    sync,
+    calculate
 }
