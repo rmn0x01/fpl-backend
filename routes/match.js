@@ -6,7 +6,7 @@ const roleMiddleware = require('../middleware/role')
 
 router.get('/', authMiddleware.verifyToken, matchController.getAll)
 router.get('/sync', authMiddleware.verifyToken, matchController.sync)
-router.get('/calculate/:gameweek', authMiddleware.verifyToken, matchController.calculate)
+router.get('/calculate/:season/:gameweek', authMiddleware.verifyToken, matchController.calculate)
 router.get('/gameweek/:season/:gameweek', authMiddleware.verifyToken, matchController.getBySeasonAndGameweek)
 router.get('/:id', authMiddleware.verifyToken, matchController.getById)
 

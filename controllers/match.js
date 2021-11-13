@@ -67,8 +67,9 @@ const sync = async (req, res) => {
 
 const calculate = async (req, res) => {
     try {
-        let result = await matchService.calculate(req.params.gameweek)
+        let result = await matchService.calculate(req.params.season,req.params.gameweek)
         res.status(200).json({
+            season: req.params.season,
             gameweek: req.params.gameweek,
             data: result
         })

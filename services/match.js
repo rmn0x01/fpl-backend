@@ -199,16 +199,16 @@ const sync = async () => {
     }
 }
 
-const calculate = async (gameweek) => {
+const calculate = async (season, gameweek) => {
     try {
         var data = await db.any(`
             SELECT md.match_detail_id, md.is_starting, md.goal, md.assist, md.yellow_card, md.red_card, md.own_goal 
             FROM ${table} m 
             JOIN fpl.match_details md ON md.match_id = m.match_id 
-            WHERE m.gameweek = $1
-        `,[gameweek])
+            WHERE m.season = $1::varchar AND m.gameweek = $2::integer
+        `,[season, gameweek])
         if(data.length == 0){
-            throw 'Invalid Gameweek'
+            throw 'Invalid Season or Gameweek'
         }
         for(let i=0; i<data.length; i++){
             var matchDetailId   = data[i].match_detail_id
