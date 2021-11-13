@@ -15,6 +15,8 @@ const playerRouter = require('./routes/player')
 const squadRouter = require('./routes/squad')
 //fpl match ++api
 const matchRouter = require('./routes/match')
+//marketplace
+const priceRouter = require('./routes/price')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -25,6 +27,7 @@ app.use('/team', teamRouter)
 app.use('/player', playerRouter)
 app.use('/squad', squadRouter)
 app.use('/match', matchRouter)
+app.use('/price', priceRouter)
 
 app.listen(port, () => {
     console.log(`Listening at ${port}`)
