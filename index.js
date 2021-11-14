@@ -19,6 +19,7 @@ const matchRouter = require('./routes/match')
 const priceRouter = require('./routes/price')
 const marketRouter = require('./routes/market')
 const creditRouter = require('./routes/credit')
+const inventoryRouter = require('./routes/inventory')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -32,6 +33,7 @@ app.use('/match', matchRouter)
 app.use('/price', priceRouter)
 app.use('/market', marketRouter)
 app.use('/credit', creditRouter)
+app.use('/inventory', inventoryRouter)
 
 app.listen(port, () => {
     console.log(`Listening at ${port}`)

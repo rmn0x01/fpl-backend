@@ -21,6 +21,15 @@ const getById = async (id) => {
 
 }
 
+const getByUser = async (userId) => {
+    try {
+        let data = await db.any(`SELECT * FROM ${table} WHERE user_id = $1::varchar`, [userId])
+        return data
+    } catch (err) {
+        throw(err)
+    }
+}
+
 const getByUserAndSquad = async (userId, squadId) => {
     try{
         let data = await db.any(`SELECT * FROM ${table} WHERE user_id = $1::varchar AND squad_id = $2::integer LIMIT 1`, [userId,squadId])
@@ -49,10 +58,69 @@ const remove = async (userInventoryId) => {
     }
 }
 
+const countActivePlayerByUser = async (userId) => {
+    try {
+        let data = await db.any(`
+            SELECT COUNT(*) FROM ${table}
+            WHERE user_id = $1::varchar 
+            AND is_active = true;
+        `,[userId])
+        return data
+    } catch (err) {
+        throw(err)
+    }
+}
+
+const toggleActive = async (userId, userInventoryId) => {
+    try {
+        //validate if exists
+        const checkExisting = await getById(userInventoryId)
+        if(checkExisting.length==0){
+            throw 'Invalid ID'
+        }
+        //validate if userId really owns userInventoryId
+        if(checkExisting[0].user_id != userId){
+            throw 'No Permission'
+        }
+        //validate if active player is less than 11
+        let activePlayer = await countActivePlayerByUser(userId)
+        const maxActivePlayer = process.env.PLAYER_MAX_ACTIVE_PLAYER || 11
+        if(activePlayer[0].count >= maxActivePlayer){
+            throw 'Reached Maximum Active Player'
+        }
+        await db.any(`UPDATE ${table} SET is_active = TRUE WHERE ${primaryKey} = $1`, [userInventoryId])
+        return `${userInventoryId} has been updated`
+    } catch (err) {
+        throw(err)
+    }
+}
+
+const toggleInactive = async (userId, userInventoryId) => {
+    try {
+        //validate if exists
+        const checkExisting = await getById(userInventoryId)
+        if(checkExisting.length==0){
+            throw 'Invalid ID'
+        }
+        //validate if userId really owns userInventoryId
+        if(checkExisting[0].user_id != userId){
+            throw 'No Permission'
+        }
+        await db.any(`UPDATE ${table} SET is_active = FALSE WHERE ${primaryKey} = $1`, [userInventoryId])
+        return `${userInventoryId} has been updated`
+    } catch (err) {
+        throw(err)
+    }
+}
+
 module.exports = {
     getAll,
     getById,
+    getByUser,
     getByUserAndSquad,
     insert,
-    remove
+    remove,
+    countActivePlayerByUser,
+    toggleActive,
+    toggleInactive,
 }
