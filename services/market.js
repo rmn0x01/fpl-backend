@@ -1,8 +1,9 @@
 const db    = require('../libraries/db')
+const transactionLogService = require('../services/transaction-log')
 
 const getAllTransactions = async () => {
     try{
-        let data = await db.any(`SELECT * FROM marketplace.transaction_logs`, [true])
+        let data = await transactionLogService.getAll()
         return data
     } catch (err){
         throw(err)
