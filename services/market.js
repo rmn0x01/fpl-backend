@@ -76,6 +76,10 @@ const sell = async (userId, userInventoryId) => {
         if(checkExisting.length==0){
             throw 'Invalid ID'
         }
+        //TODO validate if userId really owns userInventoryId
+        // if(checkExisting[0].user_id != userId){
+        //     throw 'No Permission on this card'
+        // }
         // get latest price
         const squadId = checkExisting[0].squad_id
         let latestPrice = await priceService.getBySquad(squadId)
