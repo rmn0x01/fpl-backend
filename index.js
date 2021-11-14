@@ -17,7 +17,7 @@ const squadRouter = require('./routes/squad')
 const matchRouter = require('./routes/match')
 //marketplace
 const priceRouter = require('./routes/price')
-const marketRouter = require('/routes/market')
+const marketRouter = require('./routes/market')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 

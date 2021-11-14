@@ -3,7 +3,7 @@ exports.up = async function(knex){
     await knex.raw(`DROP VIEW IF EXISTS marketplace.latest_prices`)
     await knex.raw(`
         CREATE OR REPLACE VIEW marketplace.latest_prices
-        AS SELECT sq.squad_id, sq.season, sq.team_id, te.team_nm, sq.player_id, pl.player_nm, pl.player_pos, table_squad_latest_price.price as latest_price 
+        AS SELECT sq.squad_id, sq.season, sq.team_id, te.team_nm, sq.player_id, pl.player_nm, pl.player_pos, table_squad_latest_price.price_id, table_squad_latest_price.price as latest_price 
         FROM fpl.squads sq 
         JOIN fpl.teams te ON sq.team_id = te.team_id 
         JOIN fpl.players pl ON sq.player_id = pl.player_id 

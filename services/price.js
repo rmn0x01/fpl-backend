@@ -49,6 +49,15 @@ const getBySeason = async (id) => {
     }
 }
 
+const getBySquad = async (id) => {
+    try {
+        let data = await db.any(`SELECT * FROM ${view} WHERE squad_id=$1::integer`,[id])
+        return data
+    } catch (err) {
+        throw(err)
+    }
+}
+
 const insert = async (squadId, price) => {
     try {
         let data = await db.one(`INSERT INTO ${table}(squad_id,price,created_at) VALUES($1, $2, CURRENT_TIMESTAMP) RETURNING ${primaryKey}`, [squadId, price])
@@ -82,6 +91,7 @@ module.exports = {
     getByTeam,
     getByPlayer,
     getBySeason,
+    getBySquad,
     insert,
     update,
     remove
