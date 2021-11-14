@@ -4,9 +4,21 @@ const priceService          = require('../services/price')
 const inventoryService      = require('../services/inventory')
 const creditService         = require('../services/credit')
 
+//As long as transactions and credits dont have standalone function/endpoints, getAllTransactions and getAllCredits will remain in marketService,
+//otherwise they will be moved to their own respective services
+
 const getAllTransactions = async () => {
     try{
         let data = await transactionLogService.getAll()
+        return data
+    } catch (err){
+        throw(err)
+    }
+}
+
+const getAllCredits = async () => {
+    try{
+        let data = await creditService.getAll()
         return data
     } catch (err){
         throw(err)
@@ -93,6 +105,7 @@ const sell = async (userId, userInventoryId) => {
 
 module.exports = {
     getAllTransactions,
+    getAllCredits,
     buy,
     sell
 }

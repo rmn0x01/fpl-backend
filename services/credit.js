@@ -20,6 +20,15 @@ const getByUser = async (userId) => {
     }
 }
 
+const insert = async (userId, credit) => {
+    try {
+        let data = await db.any(`INSERT INTO ${table}(user_id, credit) VALUES($1,$2) RETURNING ${primaryKey}`,[userId, credit])
+        return data
+    } catch (err) {
+        throw(err)
+    }
+}
+
 const update = async (userId, credit) => {
     try {
         await db.any(`UPDATE ${table} SET credit = $1 WHERE user_id = $2::varchar`, [credit, userId])
@@ -56,6 +65,7 @@ const addCredit = async (userId, amount) => {
 module.exports = {
     getAll,
     getByUser,
+    insert,
     update,
     subtractCredit,
     addCredit

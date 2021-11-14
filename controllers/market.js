@@ -14,6 +14,20 @@ const getAllTransactions = async (req, res) => {
     }
 }
 
+const getAllCredits = async (req, res) => {
+    try{
+        let result = await marketService.getAllCredits()
+        res.status(200).json({
+            data: result
+        })
+    } catch(err){
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
 const buy = async (req, res) => {
     try {
         const squadId   = req.params.id
@@ -50,6 +64,7 @@ const sell = async (req, res) => {
 
 module.exports = {
     getAllTransactions,
+    getAllCredits,
     buy,
     sell
 }
