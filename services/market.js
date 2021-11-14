@@ -40,13 +40,19 @@ const buy = async (userId,squadId) => {
         }
         //validate credits
         const userCredit = await creditService.getByUser(userId)
-        console.log(userId)
         if(userCredit.length==0){
             throw 'Credit not found, ask administrator'
         } else if(userCredit[0].credit < latestPrice[0].latest_price){
             throw 'Insufficient Credit'
         }
-
+        //validate player owned
+        const userInventory  = await inventoryService.getByUser(userId)
+        const maxPlayerOwned = process.env.PLAYER_MAX_INVENTORY || 15
+        console.log(maxPlayerOwned)
+        console.log(userInventory.length)
+        if(userInventory.length >= maxPlayerOwned){
+            throw 'Reached Maximum Owned Player'
+        } 
         db.tx(async t => {
             // insert to log
             const priceId = latestPrice[0].price_id
