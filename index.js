@@ -20,6 +20,8 @@ const priceRouter = require('./routes/price')
 const marketRouter = require('./routes/market')
 const creditRouter = require('./routes/credit')
 const inventoryRouter = require('./routes/inventory')
+//leaderboard
+const leaderboardRouter = require('./routes/leaderboard')
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -34,6 +36,7 @@ app.use('/price', priceRouter)
 app.use('/market', marketRouter)
 app.use('/credit', creditRouter)
 app.use('/inventory', inventoryRouter)
+app.use('/leaderboard', leaderboardRouter)
 
 app.listen(port, () => {
     console.log(`Listening at ${port}`)
