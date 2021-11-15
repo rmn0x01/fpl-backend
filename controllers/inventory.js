@@ -64,9 +64,30 @@ const toggleInactive = async (req, res) => {
     }
 }
 
+const lock = async (req, res) => {
+    try {
+        const season = req.params.season
+        const gameweek = req.params.gameweek
+        const userId = req.user.user_id
+        let result = await inventoryService.lock(userId, season, gameweek)
+        res.status(200).json({
+            season: season,
+            gameweek: gameweek,
+            user_id: userId,
+            data: result
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({
+            message: err.message || err
+        })
+    }
+}
+
 module.exports = {
     getAll,
     getByUser,
     toggleActive,
     toggleInactive,
+    lock,
 }

@@ -8,4 +8,5 @@ router.get('/',authMiddleware.verifyToken, roleMiddleware.isAdminOrSuper, invent
 router.get('/my-inventory', authMiddleware.verifyToken, inventoryController.getByUser)
 router.get('/toggle-active/:id', authMiddleware.verifyToken, inventoryController.toggleActive)
 router.get('/toggle-inactive/:id', authMiddleware.verifyToken, inventoryController.toggleInactive)
+router.get('/lock/:season/:gameweek', authMiddleware.verifyToken, inventoryController.lock)
 module.exports = router

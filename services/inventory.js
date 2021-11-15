@@ -40,6 +40,15 @@ const getByUserAndSquad = async (userId, squadId) => {
 
 }
 
+const getActiveByUser = async (userId) => {
+    try {
+        let data = await db.any(`SELECT * FROM ${table} WHERE user_id = $1::varchar AND is_active = true`,[userId])
+        return data
+    } catch (err) {
+        throw(err)
+    }
+}
+
 const insert = async (userId, squadId) => {
     try {
         let data = await db.any(`INSERT INTO ${table}(user_id, squad_id) VALUES($1,$2) RETURNING ${primaryKey}`,[userId, squadId])
@@ -85,8 +94,8 @@ const toggleActive = async (userId, userInventoryId) => {
         //validate if active player is less than 11
         let activePlayer = await countActivePlayerByUser(userId)
         const maxActivePlayer = process.env.PLAYER_MAX_ACTIVE_PLAYER || 11
-        if(activePlayer[0].count >= maxActivePlayer){
-            throw 'Reached Maximum Active Player'
+        if(parseInt(activePlayer[0].count) >= parseInt(maxActivePlayer)){
+            throw `Reached Maximum Active Player`
         }
         await db.any(`UPDATE ${table} SET is_active = TRUE WHERE ${primaryKey} = $1`, [userInventoryId])
         return `${userInventoryId} has been updated`
@@ -113,14 +122,39 @@ const toggleInactive = async (userId, userInventoryId) => {
     }
 }
 
+const lock = async (userId, season, gameweek) => {
+    try {
+        //validate if user has already locked in specific season/gameweek
+        let hasLocked = await db.any(`SELECT * FROM marketplace.user_locked_players WHERE user_id = $1::varchar AND season = $2::varchar AND gameweek = $3::integer`, [userId,season,gameweek])
+        if(hasLocked.length > 1){
+            throw 'Already lock player for this season/gameweek'
+        }
+        //validate if user has 11 active players (advanced: can scan which players' pos)
+        const activePlayer = await getActiveByUser(userId);
+        const maxActivePlayer = process.env.PLAYER_MAX_ACTIVE_PLAYER || 11
+        if(parseInt(activePlayer.length)!=parseInt(maxActivePlayer)){
+            throw `Must have ${maxActivePlayer} active players, currently has ${activePlayer.length}`
+        }
+        for(let i = 0; i<activePlayer.length; i++){
+            var squadId = activePlayer[i].squad_id
+            await db.any(`INSERT INTO marketplace.user_locked_players(season, gameweek, user_id, squad_id) VALUES($1,$2,$3,$4)`,[season, gameweek, userId, squadId])            
+        }
+        return 'Players have been locked'
+    } catch (err) {
+        throw(err)
+    }
+}
+
 module.exports = {
     getAll,
     getById,
     getByUser,
     getByUserAndSquad,
+    getActiveByUser,
     insert,
     remove,
     countActivePlayerByUser,
     toggleActive,
     toggleInactive,
+    lock,
 }
