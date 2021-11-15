@@ -228,11 +228,36 @@ const calculate = async (season, gameweek) => {
     }
 }
 
+const userScoring = async (season, gameweek) => {
+    try {
+        //ambil squad_id dari match_detail_id sesuai season/gameweek
+        let matchDetail = await db.any(`
+            SELECT md.match_detail_id, md.squad_id FROM fpl.match_details md
+            JOIN fpl.matches m ON md.match_id = m.match_id
+            WHERE m.season = $1::varchar AND m.gameweek = $2::integer
+        `,[season, gameweek])
+        if(matchDetail.length == 0){
+            throw 'Invalid Season or Gameweek'
+        }
+        //update user lock sesuai squad_id, season, gameweek
+        for(let i=0; i<matchDetail.length; i++){
+            var matchDetailId   = matchDetail[i].match_detail_id
+            var squadId         = matchDetail[i].squad_id
+
+            db.any(`UPDATE marketplace.user_locked_players SET match_detail_id = $1::integer WHERE squad_id = $2::integer AND season = $3::varchar AND gameweek = $4::integer`,[matchDetailId, squadId, season, gameweek])
+        }
+        return 'done'
+    } catch (err) {
+        throw(err)
+    }
+}
+
 module.exports = {
     getAll,
     getBySeasonAndGameweek,
     getById,
     getLatestGameweek,
     sync,
-    calculate
+    calculate,
+    userScoring
 }
